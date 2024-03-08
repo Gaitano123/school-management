@@ -98,44 +98,132 @@ class Parent_Student(db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey('parents.id'))
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
     
-# class Finance(db.Model):
-#     pass
+class Finance(db.Model):
+    
+    __tablename__ = 'finances'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.Integer)
+    tearm = db.Column(db.String)
+    form = db.Column(db.Integer)
+    
 
-# class Student_Finance(db.Model):
-#     pass
+class Student_Finance(db.Model):
+    
+    __tablename__ = 'student_finances'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    finance_id = db.Column(db.Integer, db.ForeignKey('finances.id'))
+    admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    paid = db.Column(db.Integer)
+    balance = db.Column(db.Integer)
+    date = db.Column(db.DateTime, server_default=db.func.now())
 
-# class Replacement(db.Model):
-#     pass
+class Replacement(db.Model):
+    
+    __tablename__ = 'replacements'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    finance_id = db.Column(db.Integer, db.ForeignKey('finances.id'))
+    admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    item = db.Column(db.String)
+    quantitiy = db.Column(db.Integer)
+    amount = db.Column(db.Integer)
+    date = db.Column(db.DateTime, server_default=db.func.now())
+        
+class Department(db.Model):
+    
+    __tablename__ = 'departments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
 
-# class Department(db.Model):
-#     pass
+class Academic_Department(db.Model):
+    
+    __tablename__ = 'academic_departments'
+    
+    subject = db.Column(db.String, primary_key=True)
+    department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
+    head_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+    block = db.Column(db.String)
 
-# class Academic_Department(db.Model):
-#     pass
+class Teacher_Department(db.Model):
+    
+    __tablename__ = 'teacher_departments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String, db.ForeignKey('academic_departments.subject'))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
 
-# class Teacher_Department(db.Model):
-#     pass
+class Class(db.Model):
+    
+    __tablename__ = 'classes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    form = db.Column(db.Integer)
+    stream = db.Column(db.String)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+    captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    class_reps = db.Column(db.String)
 
-# class Class(db.Model):
-#     pass
+class Student_Class(db.Model):
+    
+    __tablename__ = 'student_classes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
 
-# class Student_Class(db.Model):
-#     pass
+class Teacher_Class(db.Model):
+    
+    __tablename__ = 'teacher_classes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+    subject = db.Column(db.String, db.ForeignKey('academic_departments.subject'))
+    
+class Health(db.Model):
+    
+    __tablename__ = 'health'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    head_id = db.Column(db.Integer, db.ForeignKey('medics.id'))
+    captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
 
-# class Teacher_Class(db.Model):
-#     pass
-
-# class Health(db.Model):
-#     pass
-
-# class Medical_Record(db.Model):
-#     pass
-
-# class Drug(db.Model):
-#     pass
-
-# class Dosage_Day(db.Model):
-#     pass
+class Medical_Record(db.Model):
+    
+    __tablename__ = 'medical_records'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    head_id = db.Column(db.Integer, db.ForeignKey('medics.id'))
+    admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    symptoms = db.Column(db.String)
+    sickness = db.Column(db.String)
+    sick_leave = db.Column(db.String)
+    date = db.Column(db.DateTime, server_default=db.func.now())    
+    
+class Drug(db.Model):
+    
+    __tablename__ = 'drugs'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    medical_id = db.Column(db.Integer, db.ForeignKey('medical_records.id'))
+    drug = db.Column(db.String)
+    dose = db.Column(db.String)
+    days = db.Column(db.Integer)
+    complete = db.Column(db.Boolean)
+    
+class Dosage_Day(db.Model):
+    
+    __tablename__ = 'dosage_days'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    drugs_id = db.Column(db.Integer, db.ForeignKey('drugs.id'))
+    morning = db.Column(db.Boolean)
+    afternoon = db.Column(db.Boolean)
+    evening = db.Column(db.Boolean)
+    date = db.Column(db.DateTime)
 
 # class Book_Exchange(db.Model):
 #     pass
