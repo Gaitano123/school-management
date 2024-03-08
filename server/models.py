@@ -225,38 +225,119 @@ class Dosage_Day(db.Model):
     evening = db.Column(db.Boolean)
     date = db.Column(db.DateTime)
 
-# class Book_Exchange(db.Model):
-#     pass
+class Book_Exchange(db.Model):
+    __tablename__ = 'exercise_book_exchange'
 
-# class Teacher_Exchange(db.Model):
-#     pass
+    
+    id = db.Column(db.Integer , primary_key=True)
+    admin_no = db.Column(db.Integer , db.ForeignKey('students.admin_no'))
+    size = db.Column(db.String(3))
+    type = db.Column(db.String(2))
+    quantity = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
 
-# class Staff_Exchange(db.Model):
-#     pass
 
-# class Sport(db.Model):
-#     pass
+class Teacher_Exchange(db.Model):
+    __tablename__ = 'teachers_exchange'
 
-# class sport_Detail(db.Model):
-#     pass
 
-# class Sport_Member(db.Model):
-#     pass
+    id = db.Column(db.Integer , primary_key=True)
+    teacher_id = db.Column (db.Integer , db.ForeignKey('teachers.id'))
+    admin_no = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+    item = db.Column (db.String)
+    colour = db.Column (db.String)
+    quantity = db.Column (db.Integer)
+    date = db.Column(db.DateTime)
 
-# class Club(db.Model):
-#     pass
 
-# class Club_Detail(db.Model):
-#     pass
+class Staff_Exchange(db.Model):
+    __tablename__ = 'staff'
 
-# class Club_Member(db.Model):
-#     pass
 
-# class Block(db.Model):
-#     pass
+    id = db.Column (db.Integer , primary_key=True)
+    member_id = db.Column (db.Integer , db.ForeignKey('members.id'))
+    item = db.Column (db.String)
+    quantity = db.Column (db.Integer)
+    date = db.Column(db.DateTime)
+   
 
-# class Dorms(db.Model):
-#     pass
+class Sport(db.Model):
+    __tablename__ = 'sports'
 
-# class Student_Dorm(db.Model):
-#     pass
+
+    id = db.Column (db.Integer , primary_key=True)
+    sport = db.Column(db.String)
+    captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+    shod = db.Column (db.String , db.ForeignKey('teachers.id'))
+
+class sport_Detail(db.Model):
+    __tablename__ = 'sport_details'
+
+
+    id = db.Column (db.Integer , primary_key=True)
+    sport_id = db.Column (db.Integer , db.ForeignKey('sports.id'))
+    coach_id = db.Column (db.Integer , db.ForeignKey('members.id'))
+    captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+
+
+class Sport_Member(db.Model):
+    __tablename__ = 'sport_members'
+
+
+    id = db.Column (db.Integer , primary_key=True)
+    sport_id = db.Column (db.Integer , db.ForeignKey('sports.id'))
+    admin_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+
+class Club(db.Model):
+    __tablename__ = 'clubs'
+
+
+    id = db.Column (db.Integer , primary_key=True)
+    club = db.Column (db.String)
+    captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+    shod = db.Column (db.String , db.ForeignKey('teachers.id'))
+
+
+
+class Club_Detail(db.Model):
+    __tablename__ = 'club_details'
+
+
+    id = db.Column (db.Integer , primary_key=True)
+    club_id = db.Column (db.Integer , db.ForeignKey('clubs.id'))
+    head_id = db.Column (db.Integer , db.ForeignKey('members.id'))
+    captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+
+
+class Club_Member(db.Model):
+    __tablename__ = 'club_members'
+
+
+    id = db.Column (db.Integer , primary_key=True)
+    club_id = db.Column (db.Integer , db.ForeignKey('clubs.id'))
+    admin_no = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+
+class Block(db.Model):
+    __tablename__ = 'blocks'
+
+
+    id = db.Column (db.Integer , primary_key=True)
+    block = db.Column (db.String)
+    master_id = db.Column (db.Integer , db.ForeignKey('teachers.id'))
+
+class Dorms(db.Model):
+    __tablename__ = 'dorms'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    block_id = db.Column(db.Integer, db.ForeignKey('blocks.id'))
+    house = db.Column(db.String)
+    captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    master_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))    
+
+class StudentDorms(db.Model):
+    __tablename__ = 'student_dorms'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    dorm_id = db.Column(db.Integer, db.ForeignKey('dorms.id'))
+    cube = db.Column(db.Integer)
+    admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
