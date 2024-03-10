@@ -334,10 +334,10 @@ class Dorms(db.Model):
     captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
     master_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))    
 
-# class StudentDorms(db.Model):
-#     __tablename__ = 'student_dorms'
+class StudentDorms(db.Model):
+    __tablename__ = 'student_dorms'
     
-#     id = db.Column(db.Integer, primary_key=True)
-#     dorm_id = db.Column(db.Integer, db.ForeignKey('dorms.id'))
-#     cube = db.Column(db.Integer)
-#     admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    id = db.Column(db.Integer, primary_key=True)
+    dorm_id = db.Column(db.Integer, db.ForeignKey('dorms.id'))
+    cube = db.Column(db.Integer)
+    admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
