@@ -281,6 +281,13 @@ class Book_Exchange(db.Model):
 
     student = db.relationship('Student', backref='medical_records')
 
+    def __init__(self, admin_no, size, type, quantity, date):
+        self.admin_no = admin_no
+        self.size = size
+        self.type = type
+        self.quantity = quantity
+        self.date = date
+
 class Teacher_Exchange(db.Model):
     __tablename__ = 'teachers_exchange'
 
@@ -296,6 +303,14 @@ class Teacher_Exchange(db.Model):
     student = db.relationship('Student', backref='teachers_exchange')
     teacher = db.relationship('Teacher', backref='teachers_exchange')
 
+    def __init__(self, teacher_id, admin_no, item, colour, quantity, date):
+        self.teacher_id = teacher_id
+        self.admin_no = admin_no
+        self.item = item
+        self.colour = colour
+        self.quantity = quantity
+        self.date = date
+
 class Staff_Exchange(db.Model):
     __tablename__ = 'staff_excahnge'
 
@@ -307,6 +322,12 @@ class Staff_Exchange(db.Model):
     date = db.Column(db.DateTime)
     
     member = db.relationship('Member', backref='staff_excahnge')
+
+    def __init__(self , members_id , item , quantity , date):
+        self.member_id = members_id
+        self.item = item
+        self.quantity = quantity
+        self.date = date
    
 
 class Sport(db.Model):
@@ -319,7 +340,13 @@ class Sport(db.Model):
     shod = db.Column (db.String , db.ForeignKey('teachers.id'))
     
     student = db.relationship('Student', backref='sports')
-    teacher = db.relationship('Teacher', backref='sports')    
+    teacher = db.relationship('Teacher', backref='sports')  
+
+    def __init__(self , sport , captain_id , shod):
+        self.sport = sport 
+        self.captain_id = captain_id
+        self.shod = shod
+          
 
 class sport_Detail(db.Model):
     __tablename__ = 'sport_details'
@@ -332,7 +359,12 @@ class sport_Detail(db.Model):
     
     student = db.relationship('Student', backref='sport_details')
     member = db.relationship('Member', backref='sport_details')
-    sport = db.relationship('Sport', backref = 'sport_details')    
+    sport = db.relationship('Sport', backref = 'sport_details') 
+
+    def __init__(self , sport_id , coach_id , captain_id):
+        self.sport_id = sport_id
+        self.coach_id = coach_id
+        self.captain_id = captain_id   
     
 
 class Sport_Member(db.Model):
@@ -346,6 +378,10 @@ class Sport_Member(db.Model):
     student = db.relationship('Student', backref='sport_members')
     sport = db.relationship('Sport', backref = 'sport_members')    
 
+    def __init__ (self , sport_id , admin_id):
+        self.sport_id = sport_id
+        self.admin_id = admin_id
+
 class Club(db.Model):
     __tablename__ = 'clubs'
 
@@ -357,6 +393,11 @@ class Club(db.Model):
 
     student = db.relationship('Student', backref='clubs')
     teacher = db.relationship('Teacher', backref='clubs') 
+
+    def __init__ (self ,club , captain_id , shod_id ):
+        self.club = club
+        self.captain_id = captain_id
+        self.shod_id = shod_id
 
 class Club_Detail(db.Model):
     __tablename__ = 'club_details'
@@ -371,6 +412,11 @@ class Club_Detail(db.Model):
     teacher = db.relationship('Teacher', backref='club_details')     
     club = db.relationship('Club', backref='club_details')
 
+    def __init__(self , club_id , head_id , captain_id):
+        self.club_id = club_id
+        self.head_id = head_id
+        self.captain_id = captain_id
+
 
 class Club_Member(db.Model):
     __tablename__ = 'club_members'
@@ -383,6 +429,11 @@ class Club_Member(db.Model):
     club = db.relationship('Club', backref='club_members')
     student = db.relationship('Student', backref='club_members')
 
+    def __init__(self , club_id , admin_no):
+        self.club_id = club_id
+        self.admin_no = admin_no
+
+
 class Block(db.Model):
     __tablename__ = 'blocks'
 
@@ -391,7 +442,11 @@ class Block(db.Model):
     block = db.Column (db.String)
     master_id = db.Column (db.Integer , db.ForeignKey('teachers.id'))
     
-    teacher = db.relationship('Teacher', backref='blocks')     
+    teacher = db.relationship('Teacher', backref='blocks') 
+
+    def __init__ (self , block , master_id):
+        self.block = block
+        self.master_id = master_id    
 
 class Dorms(db.Model):
     __tablename__ = 'dorms'
@@ -405,6 +460,12 @@ class Dorms(db.Model):
     teacher = db.relationship('Teacher', backref='dorms')     
     student = db.relationship('Student', backref='dorms')
 
+    def __init__ (self , block_id,house,captain_id,master_id):
+        self.block_id = block_id
+        self.house = house
+        self.captain_id = captain_id
+        self.master_id = master_id
+
 class StudentDorms(db.Model):
     __tablename__ = 'student_dorms'
     
@@ -415,3 +476,8 @@ class StudentDorms(db.Model):
     
     dorm = db.relationship('Dorm', backref='student_dorms')
     student = db.relationship('Student', backref='student_dorms')
+
+    def __init__(self, dorm_id , cube , admin_no):
+        self.dorm_id = dorm_id
+        self.cube = cube 
+        self.admin_no = admin_no
