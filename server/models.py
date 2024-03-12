@@ -1,4 +1,3 @@
-
 from __init__ import *
 from datetime import datetime
 
@@ -8,6 +7,9 @@ class Role(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(db.String)
+    
+    def __init__(self, role):
+        self.role = role
 
 class Member(db.Model):
     
@@ -29,6 +31,21 @@ class Member(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     
     role_member = db.relationship('Role', backref='members')
+    
+    def __init__(self, first_name, middle_name, last_name, photo, date_of_birth, age, gender, nationality, ethnicity, religion, home_address, phone_no, role_id):
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
+        self.photo = photo
+        self.date_of_birth = date_of_birth
+        self.age = age
+        self.gender = gender
+        self.nationality = nationality
+        self.ethnicity =ethnicity
+        self.religion = religion
+        self.home_address = home_address
+        self.phone_no = phone_no
+        self.role_id = role_id
 
 class Teacher(db.Model):
     
@@ -43,6 +60,13 @@ class Teacher(db.Model):
     
     member = db.relationship('Member', backref='teachers')
     
+    def __init__(self, id_no, kcse, degree, license_by_tsc, experience):
+        self.id_no = id_no
+        self.kcse = kcse
+        self.degree = degree
+        self.license_by_tsc = license_by_tsc
+        self.experience = experience
+    
 class Medic(db.Model):
     
     __tablename__ = 'medics'
@@ -54,7 +78,12 @@ class Medic(db.Model):
     experience = db.Column(db.String)
     
     member_medic = db.relationship('Member', backref='medics')
-
+    
+    def __init__(self, id_no, license, degree, experience):
+        self.id_no = id_no
+        self.license = license
+        self.degree = degree
+        self.experience = experience
 
 class Parent(db.Model):
     
@@ -67,6 +96,14 @@ class Parent(db.Model):
     last_name = db.Column(db.String)
     phone_no = db.Column(db.Integer)
     gender = db.Column(db.String)
+    
+    def __init__(self, id_no, first_name, middle_name, last_name, phone_no, gender):
+        self.id_no = id_no
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
+        self.phone_no = phone_no
+        self.gender = gender
 
 class Student(db.Model):
     
@@ -97,6 +134,32 @@ class Student(db.Model):
     special_needs = db.Column(db.String)
     admission_date = db.Column(db.DateTime, server_default=db.func.now())
     
+    def __init__(self, first_name, middle_name, last_name, photo, date_of_birth, age, gender, 
+        nationality, ethnicity, religion, home_address, phone_no, prev_school_name, prev_school_address, 
+        kcpe, blood_group, immunization_records, allergies, emergency_contact, birth_no, leaving_cert, special_needs):
+        self.first_name = first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
+        self.photo = photo
+        self.date_of_birth = date_of_birth
+        self.age = age
+        self.gender = gender
+        self.nationality = nationality
+        self.ethnicity = ethnicity
+        self.religion = religion
+        self.home_address = home_address
+        self.phone_no = phone_no
+        self.prev_school_name = prev_school_name
+        self.prev_school_address = prev_school_address
+        self.kcpe = kcpe
+        self.blood_group = blood_group
+        self.immunization_records = immunization_records
+        self.allergies = allergies
+        self.emergency_contact = emergency_contact
+        self.birth_no = birth_no
+        self.leaving_cert = leaving_cert
+        self.special_needs = special_needs
+    
 class Parent_Student(db.Model):
     
     __tablename__ = 'parent_students'
@@ -108,6 +171,10 @@ class Parent_Student(db.Model):
     parent_student = db.relationship('Parent', backref='parent_students')
     student_parent = db.relationship('Student', backref= 'parent_students')
     
+    def __init__(self, parent_id, student_id):
+        self.parent_id = parent_id
+        self.student_id = student_id
+    
 class Finance(db.Model):
     
     __tablename__ = 'finances'
@@ -117,6 +184,10 @@ class Finance(db.Model):
     tearm = db.Column(db.String)
     form = db.Column(db.Integer)
     
+    def __init__(self, year, tearm, form):
+        self.year = year
+        self.tearm = tearm
+        self.form = form
 
 class Student_Finance(db.Model):
     
@@ -131,6 +202,12 @@ class Student_Finance(db.Model):
     
     finances = db.relationship('finances', backref='student_finances')
     student_finances = db.relationship('Student', backref='student_finances')
+    
+    def __init__(self, finance_id, admin_no, paid, balance):
+        self.finance_id = finance_id
+        self.admin_no = admin_no
+        self.paid = paid
+        self.balance = balance
 
 class Replacement(db.Model):
     
@@ -146,6 +223,13 @@ class Replacement(db.Model):
     
     relacements = db.relationship('finances', backref='student_finances')
     student = db.relationship('Student', backref='student_finances')
+    
+    def __init__(self, finance_id, admin_no, item, quantitiy, amount):
+        self.finance_id = finance_id
+        self.admin_no = admin_no
+        self.item = item
+        self.quantitiy = quantitiy
+        self.amount = amount
         
 class Department(db.Model):
     
@@ -153,6 +237,9 @@ class Department(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    
+    def __init__(self, name):
+        self.name = name
 
 class Academic_Department(db.Model):
     
@@ -165,6 +252,12 @@ class Academic_Department(db.Model):
     
     department = db.relationship('Department', backref='academic_departments')
     head = db.relationship('Teacher', backref='academic_departments')
+    
+    def __init__(self, subject, department, head_id, block):
+        self.subject = subject
+        self.department = department
+        self.head_id = head_id
+        self.block = block
 
 class Teacher_Department(db.Model):
     
@@ -176,6 +269,10 @@ class Teacher_Department(db.Model):
     
     subject_department = db.relationship('Academic_Department', backref='teacher_departments')
     teacher = db.relationship('Teacher', backref='teacher_departments' )
+    
+    def __init__(self, subject, teacher_id):
+        self.subject = subject
+        self.teacher = teacher_id
 
 class Class(db.Model):
     
@@ -190,6 +287,13 @@ class Class(db.Model):
     
     teacher = db.relationship('Teacher', backref='classes')
     student = db.relationship('Student', backref='classes')
+    
+    def __init__(self, form, stream, teacher_id, captain_id, class_reps):
+        self.form = form
+        self.stream = stream
+        self.teacher_id = teacher_id
+        self.captain_id = captain_id
+        self.class_reps = class_reps
 
 class Student_Class(db.Model):
     
@@ -200,7 +304,11 @@ class Student_Class(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
     
     student = db.relationship('Student', backref='student_classes')
-    class_student = db.relationship('Class', backref ='student_classes')    
+    class_student = db.relationship('Class', backref ='student_classes')  
+    
+    def __init__(self, class_id, student_id):
+        self.class_id = class_id
+        self.student_id = student_id
 
 class Teacher_Class(db.Model):
     
@@ -215,6 +323,11 @@ class Teacher_Class(db.Model):
     teacher = db.relationship('Teacher', backref='teacher_classes')
     subject_department = db.relationship('Academic_Department', backref='teacher_classes')
     
+    def __init__(self, class_id, teacher_id, subject):
+        self.class_id = class_id
+        self.teacher_id = teacher_id
+        self.subject = subject
+    
 class Health(db.Model):
     
     __tablename__ = 'health'
@@ -224,14 +337,18 @@ class Health(db.Model):
     captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
     
     student = db.relationship('Student', backref='health')
-    medic = db.relationship('Medic', backref='health')    
+    medic = db.relationship('Medic', backref='health')  
+    
+    def __init__(self, head_id, captain_id):
+        self.head_id = head_id
+        self.captain_id = captain_id
 
 class Medical_Record(db.Model):
     
     __tablename__ = 'medical_records'
     
     id = db.Column(db.Integer, primary_key=True)
-    head_id = db.Column(db.Integer, db.ForeignKey('medics.id'))
+    medic_id = db.Column(db.Integer, db.ForeignKey('medics.id'))
     admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
     symptoms = db.Column(db.String)
     sickness = db.Column(db.String)
@@ -239,7 +356,14 @@ class Medical_Record(db.Model):
     date = db.Column(db.DateTime, server_default=db.func.now()) 
     
     student = db.relationship('Student', backref='medical_records')
-    medic = db.relationship('Medic', backref='medical_records')         
+    medic = db.relationship('Medic', backref='medical_records')   
+    
+    def __init__(self, medic_id, admin_no, symptoms, sickness, sick_leave):
+        self.medic_id = medic_id
+        self.admin_no = admin_no
+        self.symptoms = symptoms
+        self.sickness = sickness
+        self.sick_leave = sick_leave     
     
 class Drug(db.Model):
     
@@ -252,7 +376,14 @@ class Drug(db.Model):
     days = db.Column(db.Integer)
     complete = db.Column(db.Boolean)
     
-    medic = db.relationship('Medic', backref='medical_records')         
+    medic = db.relationship('Medic', backref='medical_records') 
+    
+    def __init__(self, medical_id, drug, dose, days, complete):
+        self.medical_id = medical_id
+        self.drug = drug
+        self.dose = dose
+        self.days = days
+        self.complete = complete        
     
 class Dosage_Day(db.Model):
     
@@ -266,7 +397,12 @@ class Dosage_Day(db.Model):
     date = db.Column(db.DateTime)
     
     drugs = db.relationship('Drug', backref='dosage_days')     
-
+    
+    def __init__(self, drug_id, morning, afternoon, evening):
+        self.drug_id = drug_id
+        self.morning = morning
+        self.afternoon = afternoon
+        self.evening = evening
 
 class Book_Exchange(db.Model):
     __tablename__ = 'exercise_book_exchange'
