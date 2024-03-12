@@ -1,3 +1,4 @@
+
 from __init__ import *
 from datetime import datetime
 
@@ -26,6 +27,8 @@ class Member(db.Model):
     home_address = db.Column(db.String)
     phone_no = db.Column(db.String)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    
+    role_member = db.relationship('Role', backref='members')
 
 class Teacher(db.Model):
     
@@ -38,6 +41,8 @@ class Teacher(db.Model):
     license_by_tsc = db.Column(db.String)
     experience = db.Column(db.String)
     
+    member = db.relationship('Member', backref='teachers')
+    
 class Medic(db.Model):
     
     __tablename__ = 'medics'
@@ -47,6 +52,8 @@ class Medic(db.Model):
     license = db.Column(db.String)
     degree = db.Column(db.String)
     experience = db.Column(db.String)
+    
+    member_medic = db.relationship('Member', backref='medics')
 
 
 class Parent(db.Model):
@@ -98,6 +105,9 @@ class Parent_Student(db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey('parents.id'))
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
     
+    parent_student = db.relationship('Parent', backref='parent_students')
+    student_parent = db.relationship('Student', backref= 'parent_students')
+    
 class Finance(db.Model):
     
     __tablename__ = 'finances'
@@ -118,6 +128,9 @@ class Student_Finance(db.Model):
     paid = db.Column(db.Integer)
     balance = db.Column(db.Integer)
     date = db.Column(db.DateTime, server_default=db.func.now())
+    
+    finances = db.relationship('finances', backref='student_finances')
+    student_finances = db.relationship('Student', backref='student_finances')
 
 class Replacement(db.Model):
     
@@ -130,6 +143,9 @@ class Replacement(db.Model):
     quantitiy = db.Column(db.Integer)
     amount = db.Column(db.Integer)
     date = db.Column(db.DateTime, server_default=db.func.now())
+    
+    relacements = db.relationship('finances', backref='student_finances')
+    student = db.relationship('Student', backref='student_finances')
         
 class Department(db.Model):
     
@@ -146,6 +162,9 @@ class Academic_Department(db.Model):
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     head_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
     block = db.Column(db.String)
+    
+    department = db.relationship('Department', backref='academic_departments')
+    head = db.relationship('Teacher', backref='academic_departments')
 
 class Teacher_Department(db.Model):
     
@@ -154,6 +173,9 @@ class Teacher_Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String, db.ForeignKey('academic_departments.subject'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+    
+    subject_department = db.relationship('Academic_Department', backref='teacher_departments')
+    teacher = db.relationship('Teacher', backref='teacher_departments' )
 
 class Class(db.Model):
     
@@ -165,6 +187,9 @@ class Class(db.Model):
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
     captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
     class_reps = db.Column(db.String)
+    
+    teacher = db.relationship('Teacher', backref='classes')
+    student = db.relationship('Student', backref='classes')
 
 class Student_Class(db.Model):
     
@@ -173,6 +198,9 @@ class Student_Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'))
     student_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    
+    student = db.relationship('Student', backref='student_classes')
+    class_student = db.relationship('Class', backref ='student_classes')    
 
 class Teacher_Class(db.Model):
     
@@ -183,6 +211,10 @@ class Teacher_Class(db.Model):
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
     subject = db.Column(db.String, db.ForeignKey('academic_departments.subject'))
     
+    student = db.relationship('Student', backref='teacher_classes')
+    teacher = db.relationship('Teacher', backref='teacher_classes')
+    subject_department = db.relationship('Academic_Department', backref='teacher_classes')
+    
 class Health(db.Model):
     
     __tablename__ = 'health'
@@ -190,6 +222,9 @@ class Health(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     head_id = db.Column(db.Integer, db.ForeignKey('medics.id'))
     captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    
+    student = db.relationship('Student', backref='health')
+    medic = db.relationship('Medic', backref='health')    
 
 class Medical_Record(db.Model):
     
@@ -201,7 +236,10 @@ class Medical_Record(db.Model):
     symptoms = db.Column(db.String)
     sickness = db.Column(db.String)
     sick_leave = db.Column(db.String)
-    date = db.Column(db.DateTime, server_default=db.func.now())    
+    date = db.Column(db.DateTime, server_default=db.func.now()) 
+    
+    student = db.relationship('Student', backref='medical_records')
+    medic = db.relationship('Medic', backref='medical_records')         
     
 class Drug(db.Model):
     
@@ -214,16 +252,21 @@ class Drug(db.Model):
     days = db.Column(db.Integer)
     complete = db.Column(db.Boolean)
     
+    medic = db.relationship('Medic', backref='medical_records')         
+    
 class Dosage_Day(db.Model):
     
     __tablename__ = 'dosage_days'
     
     id = db.Column(db.Integer, primary_key=True)
-    drugs_id = db.Column(db.Integer, db.ForeignKey('drugs.id'))
+    drug_id = db.Column(db.Integer, db.ForeignKey('drugs.id'))
     morning = db.Column(db.Boolean)
     afternoon = db.Column(db.Boolean)
     evening = db.Column(db.Boolean)
     date = db.Column(db.DateTime)
+    
+    drugs = db.relationship('Drug', backref='dosage_days')     
+
 
 class Book_Exchange(db.Model):
     __tablename__ = 'exercise_book_exchange'
@@ -236,6 +279,7 @@ class Book_Exchange(db.Model):
     quantity = db.Column(db.Integer)
     date = db.Column(db.DateTime)
 
+    student = db.relationship('Student', backref='medical_records')
 
 class Teacher_Exchange(db.Model):
     __tablename__ = 'teachers_exchange'
@@ -249,9 +293,11 @@ class Teacher_Exchange(db.Model):
     quantity = db.Column (db.Integer)
     date = db.Column(db.DateTime)
 
+    student = db.relationship('Student', backref='teachers_exchange')
+    teacher = db.relationship('Teacher', backref='teachers_exchange')
 
 class Staff_Exchange(db.Model):
-    __tablename__ = 'staff'
+    __tablename__ = 'staff_excahnge'
 
 
     id = db.Column (db.Integer , primary_key=True)
@@ -259,6 +305,8 @@ class Staff_Exchange(db.Model):
     item = db.Column (db.String)
     quantity = db.Column (db.Integer)
     date = db.Column(db.DateTime)
+    
+    member = db.relationship('Member', backref='staff_excahnge')
    
 
 class Sport(db.Model):
@@ -269,6 +317,9 @@ class Sport(db.Model):
     sport = db.Column(db.String)
     captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
     shod = db.Column (db.String , db.ForeignKey('teachers.id'))
+    
+    student = db.relationship('Student', backref='sports')
+    teacher = db.relationship('Teacher', backref='sports')    
 
 class sport_Detail(db.Model):
     __tablename__ = 'sport_details'
@@ -278,7 +329,11 @@ class sport_Detail(db.Model):
     sport_id = db.Column (db.Integer , db.ForeignKey('sports.id'))
     coach_id = db.Column (db.Integer , db.ForeignKey('members.id'))
     captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
-
+    
+    student = db.relationship('Student', backref='sport_details')
+    member = db.relationship('Member', backref='sport_details')
+    sport = db.relationship('Sport', backref = 'sport_details')    
+    
 
 class Sport_Member(db.Model):
     __tablename__ = 'sport_members'
@@ -287,6 +342,9 @@ class Sport_Member(db.Model):
     id = db.Column (db.Integer , primary_key=True)
     sport_id = db.Column (db.Integer , db.ForeignKey('sports.id'))
     admin_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+    
+    student = db.relationship('Student', backref='sport_members')
+    sport = db.relationship('Sport', backref = 'sport_members')    
 
 class Club(db.Model):
     __tablename__ = 'clubs'
@@ -295,9 +353,10 @@ class Club(db.Model):
     id = db.Column (db.Integer , primary_key=True)
     club = db.Column (db.String)
     captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
-    shod = db.Column (db.String , db.ForeignKey('teachers.id'))
+    shod_id = db.Column (db.String , db.ForeignKey('teachers.id'))
 
-
+    student = db.relationship('Student', backref='clubs')
+    teacher = db.relationship('Teacher', backref='clubs') 
 
 class Club_Detail(db.Model):
     __tablename__ = 'club_details'
@@ -307,6 +366,10 @@ class Club_Detail(db.Model):
     club_id = db.Column (db.Integer , db.ForeignKey('clubs.id'))
     head_id = db.Column (db.Integer , db.ForeignKey('members.id'))
     captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+    
+    student = db.relationship('Student', backref='club_details')
+    teacher = db.relationship('Teacher', backref='club_details')     
+    club = db.relationship('Club', backref='club_details')
 
 
 class Club_Member(db.Model):
@@ -316,6 +379,9 @@ class Club_Member(db.Model):
     id = db.Column (db.Integer , primary_key=True)
     club_id = db.Column (db.Integer , db.ForeignKey('clubs.id'))
     admin_no = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
+    
+    club = db.relationship('Club', backref='club_members')
+    student = db.relationship('Student', backref='club_members')
 
 class Block(db.Model):
     __tablename__ = 'blocks'
@@ -324,6 +390,8 @@ class Block(db.Model):
     id = db.Column (db.Integer , primary_key=True)
     block = db.Column (db.String)
     master_id = db.Column (db.Integer , db.ForeignKey('teachers.id'))
+    
+    teacher = db.relationship('Teacher', backref='blocks')     
 
 class Dorms(db.Model):
     __tablename__ = 'dorms'
@@ -332,7 +400,10 @@ class Dorms(db.Model):
     block_id = db.Column(db.Integer, db.ForeignKey('blocks.id'))
     house = db.Column(db.String)
     captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
-    master_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))    
+    master_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))  
+    
+    teacher = db.relationship('Teacher', backref='dorms')     
+    student = db.relationship('Student', backref='dorms')
 
 class StudentDorms(db.Model):
     __tablename__ = 'student_dorms'
@@ -341,3 +412,6 @@ class StudentDorms(db.Model):
     dorm_id = db.Column(db.Integer, db.ForeignKey('dorms.id'))
     cube = db.Column(db.Integer)
     admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
+    
+    dorm = db.relationship('Dorm', backref='student_dorms')
+    student = db.relationship('Student', backref='student_dorms')
