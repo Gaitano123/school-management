@@ -1,6 +1,8 @@
 from __init__ import *
 from datetime import datetime
 
+current_date = datetime.now()
+
 class Role(db.Model):
     
     __tablename__ = 'roles'
@@ -21,7 +23,7 @@ class Member(db.Model):
     last_name = db.Column(db.String)
     photo = db.Column(db.String)
     date_of_birth = db.Column(db.DateTime)
-    age = db.Column(db.Integer)
+    age = db.Column(db.Integer, name="age")
     gender = db.Column(db.String)
     nationality = db.Column(db.String)
     ethnicity = db.Column(db.String)
@@ -32,13 +34,13 @@ class Member(db.Model):
     
     role_member = db.relationship('Role', backref='members')
     
-    def __init__(self, first_name, middle_name, last_name, photo, date_of_birth, age, gender, nationality, ethnicity, religion, home_address, phone_no, role_id):
+    def __init__(self, first_name, middle_name, last_name, photo, date_of_birth, gender, nationality, ethnicity, religion, home_address, phone_no, role_id):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
         self.photo = photo
-        self.date_of_birth = date_of_birth
-        self.age = age
+        self.date_of_birth = datetime.strptime(date_of_birth, '%d/%m/%Y')
+        self.age = current_date.year - self.date_of_birth.year - ((current_date.month, current_date.day) < (self.date_of_birth.month, self.date_of_birth.day))
         self.gender = gender
         self.nationality = nationality
         self.ethnicity =ethnicity
@@ -115,7 +117,7 @@ class Student(db.Model):
     last_name = db.Column(db.String)
     photo = db.Column(db.String)
     date_of_birth = db.Column(db.DateTime)
-    age = db.Column(db.Integer)
+    age = db.Column(db.Integer, name ='age')
     gender = db.Column(db.String)
     nationality = db.Column(db.String)
     ethnicity = db.Column(db.String)
@@ -134,15 +136,15 @@ class Student(db.Model):
     special_needs = db.Column(db.String)
     admission_date = db.Column(db.DateTime, server_default=db.func.now())
     
-    def __init__(self, first_name, middle_name, last_name, photo, date_of_birth, age, gender, 
+    def __init__(self, first_name, middle_name, last_name, photo, date_of_birth, gender, 
         nationality, ethnicity, religion, home_address, phone_no, prev_school_name, prev_school_address, 
         kcpe, blood_group, immunization_records, allergies, emergency_contact, birth_no, leaving_cert, special_needs):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
         self.photo = photo
-        self.date_of_birth = date_of_birth
-        self.age = age
+        self.date_of_birth = datetime.strptime(date_of_birth, '%d/%m/%Y')
+        self.age = current_date.year - self.date_of_birth.year - ((current_date.month, current_date.day) < (self.date_of_birth.month, self.date_of_birth.day))
         self.gender = gender
         self.nationality = nationality
         self.ethnicity = ethnicity
