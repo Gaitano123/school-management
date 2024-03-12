@@ -329,6 +329,17 @@ class Teacher_Class(db.Model):
         self.class_id = class_id
         self.teacher_id = teacher_id
         self.subject = subject
+        
+class Class_Reps(db.Model):
+    
+    __tablename__ = 'class_reps'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'))
+    rep_id = db.Column(db.Integer, db.ForeignKey('parents.id'))
+    
+    class_relationship = db.relationship('Class', backref='class_reps')
+    parent_relationship = db.relationship('Parent', backref ='class_reps')
     
 class Health(db.Model):
     
