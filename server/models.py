@@ -1,5 +1,13 @@
-from __init__ import *
+# from server import *
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 from datetime import datetime
+
+app = Flask(__name__)
+
+db = SQLAlchemy()
+bcrypt= Bcrypt(app)
 
 current_date = datetime.now()
 
@@ -168,7 +176,7 @@ class Parent_Student(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('parents.id'))
-    student_id = db.Column(db.Integer, db.ForeignKey('students.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
     
     parent_student = db.relationship('Parent', backref='parent_students')
     student_parent = db.relationship('Student', backref= 'parent_students')

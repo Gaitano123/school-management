@@ -1,16 +1,22 @@
-from datetime import datetime
+# from server.__init__ import app
+from flask_migrate import Migrate
+from flask_restx import Api, fields, Namespace, Resource
+# from server.models import db,app
 
-# date_string = '2004/11/13'
+from models import db, app
 
-# member_date_of_birth = datetime.strptime(date_string, '%Y/%m/%d')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SECRET_KEY'] = 'bb8f7de46cd4426ebf5ca7df06d43665'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-date_string = '13/11/2004'
+db.init_app(app)
+migrate = Migrate(app, db)
+api = Api(app)
 
-member_date_of_birth = datetime.strptime(date_string, '%d/%m/%Y')
-print(member_date_of_birth)
+ns =Namespace("api")
 
-current_date = datetime.now()
 
-age = current_date.year - member_date_of_birth.year - ((current_date.month, current_date.day) < (member_date_of_birth.month, member_date_of_birth.day))
+api.add_namespace(ns)
 
-print("Age:", age)
+if __name__ == '__main__':
+    app.run(debug=True, port = 5555)
