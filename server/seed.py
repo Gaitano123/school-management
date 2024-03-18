@@ -266,7 +266,7 @@ with app.app_context():
     for _ in range(0, 16):
         random_head = random.choice(teachers_id)
         academic_department1 = Academic_Department(
-            subject= fake.random_element(["Maths", "English", "Kiswahili", "Physics", "Chemistry", "Biology"]),
+            subject= fake.random_element(["Maths", "English", "Kiswahili", "Physics", "Chemistry", "Biology","Business","Computer","Art","Music","Aviation","CRE","History","Geography"]),
             department_id=random.randint(1, 5),
             head_id= random_head.id,
             block=fake.random_element(["Admission", "A", "B", "O"]),
@@ -299,7 +299,7 @@ with app.app_context():
         random_teacher = random.choice(teachers_id)
         class1 = Class(
             form= random.randint(1, 4),
-            stream= fake.random_element(["M", "N", "P", "Q"]),
+            stream= fake.random_element(["M", "N", "P", "Q", "S", "R","T", "U"]),
             teacher_id=random_teacher.id,
             captain_id=random.randint(1, 300)
         )
@@ -457,7 +457,7 @@ with app.app_context():
     for _ in range(0, 100):
         staff_exchange = Staff_Exchange(
             members_id=random.randint(1, 150),
-            item=fake.random_element(['Burrette', 'Pippette', 'conical falsk']),
+            item=fake.random_element(['Burrette', 'Pippette', 'conical flask']),
             quantity= random.randint(1, 6),
             date=datetime.strptime(fake.date(), '%Y-%m-%d')
         )
@@ -472,7 +472,7 @@ with app.app_context():
     for _ in range(0, 30):
         random_teacher = random.choice(teachers_id)
         sport = Sport(
-            sport = fake.random_element(["Football", "Bascket_ball", "Hockey", "Swimming", "Rugby"]),
+            sport = fake.random_element(["Football", "Bascket_ball", "Hockey", "Swimming", "Rugby", "Table_tenis"]),
             captain_id=random.randint(1, 300),
             shod=random_teacher.id
         )
@@ -518,7 +518,7 @@ with app.app_context():
     for _ in range(0, 30):
         random_teacher = random.choice(teachers_id)
         club = Club(
-            club= fake.random_element(["PA", "Aviation", "ICT","Debate" , "Farming"]),
+            club= fake.random_element(["PA", "Aviation", "ICT","Debate" , "Farming", "Science"]),
             captain_id= random.randint(1, 300),
             shod_id= random_teacher.id
         )
@@ -580,7 +580,7 @@ with app.app_context():
         random_teacher = random.choice(teachers_id)
         dorm = Dorms(
             block_id= random.randint(0, 5),
-            house=fake.random_element(["Longonot", "Elgon", "Kilimanjaro", "Marsabit", "Usambara"]),
+            house=fake.random_element(["Longonot", "Elgon", "Kilimanjaro", "Marsabit", "Usambara", "Nyayo", "Suswa"]),
             captain_id=random.randint(1, 300),
             master_id=random_teacher.id
         )
