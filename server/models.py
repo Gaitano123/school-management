@@ -6,7 +6,9 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-db = SQLAlchemy()
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+
+db = SQLAlchemy(app)
 bcrypt= Bcrypt(app)
 
 current_date = datetime.now()
@@ -210,7 +212,7 @@ class Student_Finance(db.Model):
     balance = db.Column(db.Integer)
     date = db.Column(db.DateTime, server_default=db.func.now())
     
-    finances = db.relationship('finances', backref='student_finances')
+    finances = db.relationship('Finance', backref='student_finances')
     student_finances = db.relationship('Student', backref='student_finances')
     
     def __init__(self, finance_id, admin_no, paid, balance):
@@ -231,8 +233,8 @@ class Replacement(db.Model):
     amount = db.Column(db.Integer)
     date = db.Column(db.DateTime, server_default=db.func.now())
     
-    relacements = db.relationship('finances', backref='student_finances')
-    student = db.relationship('Student', backref='student_finances')
+    relacements = db.relationship('Finance', backref='replacements')
+    student = db.relationship('Student', backref='replacements')
     
     def __init__(self, finance_id, admin_no, item, quantitiy, amount):
         self.finance_id = finance_id
@@ -255,7 +257,8 @@ class Academic_Department(db.Model):
     
     __tablename__ = 'academic_departments'
     
-    subject = db.Column(db.String, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     head_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
     block = db.Column(db.String)
@@ -263,9 +266,9 @@ class Academic_Department(db.Model):
     department = db.relationship('Department', backref='academic_departments')
     head = db.relationship('Teacher', backref='academic_departments')
     
-    def __init__(self, subject, department, head_id, block):
+    def __init__(self, subject, department_id, head_id, block):
         self.subject = subject
-        self.department = department
+        self.department_id = department_id
         self.head_id = head_id
         self.block = block
 
@@ -274,15 +277,15 @@ class Teacher_Department(db.Model):
     __tablename__ = 'teacher_departments'
     
     id = db.Column(db.Integer, primary_key=True)
-    subject = db.Column(db.String, db.ForeignKey('academic_departments.subject'))
+    subject_id = db.Column(db.String, db.ForeignKey('academic_departments.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
     
     subject_department = db.relationship('Academic_Department', backref='teacher_departments')
     teacher = db.relationship('Teacher', backref='teacher_departments' )
     
-    def __init__(self, subject, teacher_id):
-        self.subject = subject
-        self.teacher = teacher_id
+    def __init__(self, subject_id, teacher_id):
+        self.subject_id = subject_id
+        self.teacher_id = teacher_id
 
 class Class(db.Model):
     
@@ -293,17 +296,15 @@ class Class(db.Model):
     stream = db.Column(db.String)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
     captain_id = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
-    class_reps = db.Column(db.String)
     
     teacher = db.relationship('Teacher', backref='classes')
     student = db.relationship('Student', backref='classes')
     
-    def __init__(self, form, stream, teacher_id, captain_id, class_reps):
+    def __init__(self, form, stream, teacher_id, captain_id):
         self.form = form
         self.stream = stream
         self.teacher_id = teacher_id
         self.captain_id = captain_id
-        self.class_reps = class_reps
 
 class Student_Class(db.Model):
     
@@ -327,18 +328,18 @@ class Teacher_Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
-    subject = db.Column(db.String, db.ForeignKey('academic_departments.subject'))
+    subject_id = db.Column(db.String, db.ForeignKey('academic_departments.id'))
     
-    student = db.relationship('Student', backref='teacher_classes')
+    class_details = db.relationship('Class', backref='teacher_classes')
     teacher = db.relationship('Teacher', backref='teacher_classes')
     subject_department = db.relationship('Academic_Department', backref='teacher_classes')
     
-    def __init__(self, class_id, teacher_id, subject):
+    def __init__(self, class_id, teacher_id, subject_id):
         self.class_id = class_id
         self.teacher_id = teacher_id
-        self.subject = subject
+        self.subject_id = subject_id
         
-class Class_Reps(db.Model):
+class Class_Rep(db.Model):
     
     __tablename__ = 'class_reps'
     
@@ -346,8 +347,8 @@ class Class_Reps(db.Model):
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'))
     rep_id = db.Column(db.Integer, db.ForeignKey('parents.id'))
     
-    class_relationship = db.relationship('Class', backref='class_reps')
-    parent_relationship = db.relationship('Parent', backref ='class_reps')
+    class_relationship = db.relationship('Class', backref='class_reps_relation')
+    parent_relationship = db.relationship('Parent', backref='parent_class_reps')
     
 class Health(db.Model):
     
@@ -397,7 +398,7 @@ class Drug(db.Model):
     days = db.Column(db.Integer)
     complete = db.Column(db.Boolean)
     
-    medic = db.relationship('Medic', backref='medical_records') 
+    medic = db.relationship('Medical_Record', backref='drugs') 
     
     def __init__(self, medical_id, drug, dose, days, complete):
         self.medical_id = medical_id
@@ -419,11 +420,12 @@ class Dosage_Day(db.Model):
     
     drugs = db.relationship('Drug', backref='dosage_days')     
     
-    def __init__(self, drug_id, morning, afternoon, evening):
+    def __init__(self, drug_id, morning, afternoon, evening, date):
         self.drug_id = drug_id
         self.morning = morning
         self.afternoon = afternoon
         self.evening = evening
+        self.date = date
 
 class Book_Exchange(db.Model):
     __tablename__ = 'exercise_book_exchange'
@@ -436,7 +438,7 @@ class Book_Exchange(db.Model):
     quantity = db.Column(db.Integer)
     date = db.Column(db.DateTime)
 
-    student = db.relationship('Student', backref='medical_records')
+    student = db.relationship('Student', backref='exercise_book_exchange')
 
     def __init__(self, admin_no, size, type, quantity, date):
         self.admin_no = admin_no
@@ -566,7 +568,7 @@ class Club_Detail(db.Model):
     captain_id = db.Column (db.Integer , db.ForeignKey('students.admin_no'))
     
     student = db.relationship('Student', backref='club_details')
-    teacher = db.relationship('Teacher', backref='club_details')     
+    member = db.relationship('Member', backref='club_details')     
     club = db.relationship('Club', backref='club_details')
 
     def __init__(self , club_id , head_id , captain_id):
@@ -631,7 +633,7 @@ class StudentDorms(db.Model):
     cube = db.Column(db.Integer)
     admin_no = db.Column(db.Integer, db.ForeignKey('students.admin_no'))
     
-    dorm = db.relationship('Dorm', backref='student_dorms')
+    dorm = db.relationship('Dorms', backref='student_dorms')
     student = db.relationship('Student', backref='student_dorms')
 
     def __init__(self, dorm_id , cube , admin_no):

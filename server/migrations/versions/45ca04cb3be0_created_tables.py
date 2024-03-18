@@ -1,8 +1,8 @@
 """created tables
 
-Revision ID: 04e5d9154c33
+Revision ID: 45ca04cb3be0
 Revises: 
-Create Date: 2024-03-13 10:42:56.751979
+Create Date: 2024-03-18 15:30:19.796580
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '04e5d9154c33'
+revision = '45ca04cb3be0'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -160,13 +160,14 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('academic_departments',
-    sa.Column('subject', sa.String(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('subject', sa.String(), nullable=True),
     sa.Column('department_id', sa.Integer(), nullable=True),
     sa.Column('head_id', sa.Integer(), nullable=True),
     sa.Column('block', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
     sa.ForeignKeyConstraint(['head_id'], ['teachers.id'], ),
-    sa.PrimaryKeyConstraint('subject')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('blocks',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -181,7 +182,6 @@ def upgrade():
     sa.Column('stream', sa.String(), nullable=True),
     sa.Column('teacher_id', sa.Integer(), nullable=True),
     sa.Column('captain_id', sa.Integer(), nullable=True),
-    sa.Column('class_reps', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['captain_id'], ['students.admin_no'], ),
     sa.ForeignKeyConstraint(['teacher_id'], ['teachers.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -313,17 +313,17 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('class_id', sa.Integer(), nullable=True),
     sa.Column('teacher_id', sa.Integer(), nullable=True),
-    sa.Column('subject', sa.String(), nullable=True),
+    sa.Column('subject_id', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['class_id'], ['classes.id'], ),
-    sa.ForeignKeyConstraint(['subject'], ['academic_departments.subject'], ),
+    sa.ForeignKeyConstraint(['subject_id'], ['academic_departments.id'], ),
     sa.ForeignKeyConstraint(['teacher_id'], ['teachers.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('teacher_departments',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('subject', sa.String(), nullable=True),
+    sa.Column('subject_id', sa.String(), nullable=True),
     sa.Column('teacher_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['subject'], ['academic_departments.subject'], ),
+    sa.ForeignKeyConstraint(['subject_id'], ['academic_departments.id'], ),
     sa.ForeignKeyConstraint(['teacher_id'], ['teachers.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
