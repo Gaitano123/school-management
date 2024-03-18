@@ -52,14 +52,17 @@ with app.app_context():
         {"role": "Teacher"},
         {"role": "Medic"},
         {"role": "Coach"},
-        {"role": "Coock"},
+        {"role": "Cook"},
         {"role": "Cleaner"},
         {"role": "HR"},
         {"role": "Administrator"},
-        {"role": "Libraian"},
+        {"role": "Librarian"},
         {"role": "Lab-technician"},
         {"role": "ICT-Technician"},
-        {"role": "Board"}
+        {"role": "Board"},
+        {"role" : "Chaplain"},
+        {"role" : "Watchman"},
+        {"role" : "Drivers"}
     ]
     
     roles = [Role(**role_info) for role_info in roles_data]
@@ -263,7 +266,7 @@ with app.app_context():
     for _ in range(0, 16):
         random_head = random.choice(teachers_id)
         academic_department1 = Academic_Department(
-            subject= fake.random_element(["Maths", "English", "Kiswahili", "Physics"]),
+            subject= fake.random_element(["Maths", "English", "Kiswahili", "Physics", "Chemistry", "Biology"]),
             department_id=random.randint(1, 5),
             head_id= random_head.id,
             block=fake.random_element(["Admission", "A", "B", "O"]),
@@ -469,7 +472,7 @@ with app.app_context():
     for _ in range(0, 30):
         random_teacher = random.choice(teachers_id)
         sport = Sport(
-            sport = fake.random_element(["Football", "Bascket_ball", "Hockey", "Swimming"]),
+            sport = fake.random_element(["Football", "Bascket_ball", "Hockey", "Swimming", "Rugby"]),
             captain_id=random.randint(1, 300),
             shod=random_teacher.id
         )
@@ -515,7 +518,7 @@ with app.app_context():
     for _ in range(0, 30):
         random_teacher = random.choice(teachers_id)
         club = Club(
-            club= fake.random_element(["PA", "Aviation", "ICT"]),
+            club= fake.random_element(["PA", "Aviation", "ICT","Debate" , "Farming"]),
             captain_id= random.randint(1, 300),
             shod_id= random_teacher.id
         )
