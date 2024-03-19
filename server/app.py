@@ -1065,7 +1065,6 @@ class Student_Dorm_By_Id(Resource):
         return student_dorm
 
 
-
 api.add_namespace(ns)
 
 if __name__ == '__main__':
