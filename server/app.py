@@ -12,6 +12,9 @@ api = Api(app)
 
 ns =Namespace("api")
 
+@ns.route("/home")
+def home():
+    return {"message": "Welcome"}
 
 
 api.add_namespace(ns)
