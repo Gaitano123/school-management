@@ -1,8 +1,8 @@
 """created tables
 
-Revision ID: 45ca04cb3be0
+Revision ID: 0f0dda2612ec
 Revises: 
-Create Date: 2024-03-18 15:30:19.796580
+Create Date: 2024-03-19 10:01:53.230426
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '45ca04cb3be0'
+revision = '0f0dda2612ec'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -35,6 +35,7 @@ def upgrade():
     sa.Column('id_no', sa.Integer(), nullable=True),
     sa.Column('first_name', sa.String(), nullable=True),
     sa.Column('middle_name', sa.String(), nullable=True),
+    sa.Column('full_name', sa.String(), nullable=True),
     sa.Column('last_name', sa.String(), nullable=True),
     sa.Column('phone_no', sa.Integer(), nullable=True),
     sa.Column('gender', sa.String(), nullable=True),
@@ -50,6 +51,7 @@ def upgrade():
     sa.Column('first_name', sa.String(), nullable=True),
     sa.Column('middle_name', sa.String(), nullable=True),
     sa.Column('last_name', sa.String(), nullable=True),
+    sa.Column('full_name', sa.String(), nullable=True),
     sa.Column('photo', sa.String(), nullable=True),
     sa.Column('date_of_birth', sa.DateTime(), nullable=True),
     sa.Column('age', sa.Integer(), nullable=True),
@@ -78,7 +80,7 @@ def upgrade():
     sa.Column('size', sa.String(length=3), nullable=True),
     sa.Column('type', sa.String(length=2), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=True),
-    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('date', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.ForeignKeyConstraint(['admin_no'], ['students.admin_no'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -87,6 +89,7 @@ def upgrade():
     sa.Column('first_name', sa.String(), nullable=True),
     sa.Column('middle_name', sa.String(), nullable=True),
     sa.Column('last_name', sa.String(), nullable=True),
+    sa.Column('full_name', sa.String(), nullable=True),
     sa.Column('photo', sa.String(), nullable=True),
     sa.Column('date_of_birth', sa.DateTime(), nullable=True),
     sa.Column('age', sa.Integer(), nullable=True),
@@ -97,6 +100,7 @@ def upgrade():
     sa.Column('home_address', sa.String(), nullable=True),
     sa.Column('phone_no', sa.String(), nullable=True),
     sa.Column('role_id', sa.Integer(), nullable=True),
+    sa.Column('admission_date', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -145,7 +149,7 @@ def upgrade():
     sa.Column('member_id', sa.Integer(), nullable=True),
     sa.Column('item', sa.String(), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=True),
-    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('date', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.ForeignKeyConstraint(['member_id'], ['members.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -231,7 +235,7 @@ def upgrade():
     sa.Column('item', sa.String(), nullable=True),
     sa.Column('colour', sa.String(), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=True),
-    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('date', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.ForeignKeyConstraint(['admin_no'], ['students.admin_no'], ),
     sa.ForeignKeyConstraint(['teacher_id'], ['teachers.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -280,6 +284,7 @@ def upgrade():
     sa.Column('dose', sa.String(), nullable=True),
     sa.Column('days', sa.Integer(), nullable=True),
     sa.Column('complete', sa.Boolean(), nullable=True),
+    sa.Column('modified_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['medical_id'], ['medical_records.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

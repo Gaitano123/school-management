@@ -2,7 +2,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -31,6 +31,7 @@ class Member(db.Model):
     first_name = db.Column(db.String)
     middle_name = db.Column(db.String)
     last_name = db.Column(db.String)
+    full_name = db.Column(db.String, name="full_name")
     photo = db.Column(db.String)
     date_of_birth = db.Column(db.DateTime)
     age = db.Column(db.Integer, name="age")
@@ -41,13 +42,18 @@ class Member(db.Model):
     home_address = db.Column(db.String)
     phone_no = db.Column(db.String)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    admission_date = db.Column(db.DateTime, server_default=db.func.now())
     
     role_member = db.relationship('Role', backref='members')
     
-    def __init__(self, first_name, middle_name, last_name, photo, date_of_birth, gender, nationality, ethnicity, religion, home_address, phone_no, role_id):
+    def __init__(self, first_name, last_name, photo, date_of_birth, gender, nationality, ethnicity, religion, home_address, phone_no, role_id, middle_name=None,):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
+        if middle_name:
+            self.full_name = f'{first_name} {middle_name} {last_name}'
+        else:
+            self.full_name = f'{first_name} {last_name}'
         self.photo = photo
         self.date_of_birth = datetime.strptime(date_of_birth, '%d/%m/%Y')
         self.age = current_date.year - self.date_of_birth.year - ((current_date.month, current_date.day) < (self.date_of_birth.month, self.date_of_birth.day))
@@ -105,15 +111,20 @@ class Parent(db.Model):
     id_no = db.Column(db.Integer)
     first_name = db.Column(db.String)
     middle_name = db.Column(db.String)
+    full_name = db.Column(db.String, name="full_name")
     last_name = db.Column(db.String)
     phone_no = db.Column(db.Integer)
     gender = db.Column(db.String)
     
-    def __init__(self, id_no, first_name, middle_name, last_name, phone_no, gender):
+    def __init__(self, id_no, first_name, last_name, phone_no, gender,  middle_name=None):
         self.id_no = id_no
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
+        if middle_name:
+            self.full_name = f'{first_name} {middle_name} {last_name}'
+        else:
+            self.full_name = f'{first_name} {last_name}'
         self.phone_no = phone_no
         self.gender = gender
 
@@ -125,6 +136,7 @@ class Student(db.Model):
     first_name = db.Column(db.String)
     middle_name = db.Column(db.String)
     last_name = db.Column(db.String)
+    full_name = db.Column(db.String, name="full_name")
     photo = db.Column(db.String)
     date_of_birth = db.Column(db.DateTime)
     age = db.Column(db.Integer, name ='age')
@@ -146,12 +158,17 @@ class Student(db.Model):
     special_needs = db.Column(db.String)
     admission_date = db.Column(db.DateTime, server_default=db.func.now())
     
-    def __init__(self, first_name, middle_name, last_name, photo, date_of_birth, gender, 
+    def __init__(self, first_name, last_name, photo, date_of_birth, gender, 
         nationality, ethnicity, religion, home_address, phone_no, prev_school_name, prev_school_address, 
-        kcpe, blood_group, immunization_records, allergies, emergency_contact, birth_no, leaving_cert, special_needs):
+        kcpe, blood_group, immunization_records, allergies, emergency_contact, birth_no, leaving_cert, special_needs,
+         middle_name=None):
         self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
+        if middle_name:
+            self.full_name = f'{first_name} {middle_name} {last_name}'
+        else:
+            self.full_name = f'{first_name} {last_name}'        
         self.photo = photo
         self.date_of_birth = datetime.strptime(date_of_birth, '%d/%m/%Y')
         self.age = current_date.year - self.date_of_birth.year - ((current_date.month, current_date.day) < (self.date_of_birth.month, self.date_of_birth.day))
@@ -397,6 +414,7 @@ class Drug(db.Model):
     dose = db.Column(db.String)
     days = db.Column(db.Integer)
     complete = db.Column(db.Boolean)
+    modified_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     medic = db.relationship('Medical_Record', backref='drugs') 
     
@@ -405,7 +423,20 @@ class Drug(db.Model):
         self.drug = drug
         self.dose = dose
         self.days = days
-        self.complete = complete        
+        self.complete = complete    
+        
+    def update_days(self):
+        self.modified_at = datetime.utcnow()
+        
+        if self.days <= 0 or self.complete:
+            return
+
+        time_diff = datetime.utcnow() - self.modified_at
+
+        if time_diff >= timedelta(hours=24):
+            self.days -= 1
+            if self.days == 0:
+                self.complete = True 
     
 class Dosage_Day(db.Model):
     
@@ -420,12 +451,11 @@ class Dosage_Day(db.Model):
     
     drugs = db.relationship('Drug', backref='dosage_days')     
     
-    def __init__(self, drug_id, morning, afternoon, evening, date):
+    def __init__(self, drug_id, morning, afternoon, evening):
         self.drug_id = drug_id
         self.morning = morning
         self.afternoon = afternoon
         self.evening = evening
-        self.date = date
 
 class Book_Exchange(db.Model):
     __tablename__ = 'exercise_book_exchange'
@@ -436,16 +466,15 @@ class Book_Exchange(db.Model):
     size = db.Column(db.String(3))
     type = db.Column(db.String(2))
     quantity = db.Column(db.Integer)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, server_default=db.func.now())
 
     student = db.relationship('Student', backref='exercise_book_exchange')
 
-    def __init__(self, admin_no, size, type, quantity, date):
+    def __init__(self, admin_no, size, type, quantity):
         self.admin_no = admin_no
         self.size = size
         self.type = type
         self.quantity = quantity
-        self.date = date
 
 class Teacher_Exchange(db.Model):
     __tablename__ = 'teachers_exchange'
@@ -457,18 +486,17 @@ class Teacher_Exchange(db.Model):
     item = db.Column (db.String)
     colour = db.Column (db.String)
     quantity = db.Column (db.Integer)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, server_default=db.func.now())
 
     student = db.relationship('Student', backref='teachers_exchange')
     teacher = db.relationship('Teacher', backref='teachers_exchange')
 
-    def __init__(self, teacher_id, admin_no, item, colour, quantity, date):
+    def __init__(self, teacher_id, admin_no, item, colour, quantity):
         self.teacher_id = teacher_id
         self.admin_no = admin_no
         self.item = item
         self.colour = colour
         self.quantity = quantity
-        self.date = date
 
 class Staff_Exchange(db.Model):
     __tablename__ = 'staff_excahnge'
@@ -478,15 +506,14 @@ class Staff_Exchange(db.Model):
     member_id = db.Column (db.Integer , db.ForeignKey('members.id'))
     item = db.Column (db.String)
     quantity = db.Column (db.Integer)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, server_default=db.func.now())
     
     member = db.relationship('Member', backref='staff_excahnge')
 
-    def __init__(self , members_id , item , quantity , date):
+    def __init__(self , members_id , item , quantity):
         self.member_id = members_id
         self.item = item
         self.quantity = quantity
-        self.date = date
    
 
 class Sport(db.Model):
