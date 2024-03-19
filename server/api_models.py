@@ -1,6 +1,8 @@
-from flask_restx import fields
+from flask_restx import Api,fields
 from models import *
-from app import api
+# from app import api
+api = Api(app)
+
 
 
 
@@ -18,6 +20,7 @@ role_input_model = api.model("Role", {
 #-------------------------Member-------------------------
 
 member_model = api.model("Member", {
+    "id": fields.Integer,
     "first_name": fields.String,
     "middle_name": fields.String,
     "last_name": fields.String,
@@ -393,7 +396,7 @@ drug_input_model = api.model("Drug", {
 
 #-------------------------Dosage Day-------------------------
 
-dosage_day_mode =api.model("Dosage_Day",{
+dosage_day_model =api.model("Dosage_Day",{
     "id": fields.Integer,
     "drug_id": fields.Integer,
     "morning": fields.Boolean,
