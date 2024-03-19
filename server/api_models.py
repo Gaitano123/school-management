@@ -45,7 +45,6 @@ member_input_model = api.model("Member", {
     "last_name": fields.String,
     "photo": fields.String,
     "date_of_birth": fields.DateTime,
-    "age": fields.Integer,
     "gender": fields.String,
     "nationality": fields.String,
     "ethnicity": fields.String,
@@ -188,6 +187,12 @@ parent_student_input_model = api.model("Parent_Student",{
 
 finance_model = api.model("Finance", {
     "id": fields.Integer,
+    "year": fields.Integer,
+    "tearm": fields.String,
+    "form": fields.Integer
+})
+
+finance_input_model = api.model("Finance", {
     "year": fields.Integer,
     "tearm": fields.String,
     "form": fields.Integer
@@ -372,7 +377,6 @@ medical_record_input_model = api.model("Medical_Record", {
     "symptoms": fields.String,
     "sickness": fields.String,
     "sick_leave": fields.String,
-    "date": fields.DateTime
 })
 
 #-------------------------Drug-------------------------
@@ -405,12 +409,11 @@ dosage_day_model =api.model("Dosage_Day",{
     "date": fields.DateTime
 })
 
-dosage_day_input_mode =api.model("Dosage_Day",{
+dosage_day_input_model =api.model("Dosage_Day",{
     "drug_id": fields.Integer,
     "morning": fields.Boolean,
     "afternoon": fields.Boolean,
     "evening": fields.Boolean,
-    "date": fields.DateTime
 })
 
 #-------------------------Book Exchange-------------------------
