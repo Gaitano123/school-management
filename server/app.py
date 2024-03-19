@@ -15,54 +15,54 @@ api = Api(app)
 ns =Namespace("api")
 
 role_model = api.model("Role", {
-    "id": fields.integer,
-    "role": fields.string
+    "id": fields.Integer,
+    "role": fields.String
 })
 
 role_input_model = api.model("Role", {
-    "role": fields.string
+    "role": fields.String
 })
 
 memeber_model = api.model("Member", {
-    "first_name": fields.string,
-    "middle_name": fields.string,
-    "last_name": fields.string,
-    "photo": fields.string,
+    "first_name": fields.String,
+    "middle_name": fields.String,
+    "last_name": fields.String,
+    "photo": fields.String,
     "date_of_birth": fields.datetime,
-    "age": fields.integer,
-    "gender": fields.string,
-    "nationality": fields.string,
-    "ethnicity": fields.string,
-    "religion": fields.string,
-    "home_address": fields.string,
-    "phone_no": fields.string,
-    "role_id": fields.integer,
-    "role": fields.string(attribute=lambda x: Role.query.get(x.role_id).role),
+    "age": fields.Integer,
+    "gender": fields.String,
+    "nationality": fields.String,
+    "ethnicity": fields.String,
+    "religion": fields.String,
+    "home_address": fields.String,
+    "phone_no": fields.String,
+    "role_id": fields.Integer,
+    "role": fields.String(attribute=lambda x: Role.query.get(x.role_id).role),
 })
 
 memeber_input_model = api.model("Member", {
-    "first_name": fields.string,
-    "middle_name": fields.string,
-    "last_name": fields.string,
-    "photo": fields.string,
+    "first_name": fields.String,
+    "middle_name": fields.String,
+    "last_name": fields.String,
+    "photo": fields.String,
     "date_of_birth": fields.datetime,
-    "age": fields.integer,
-    "gender": fields.string,
-    "nationality": fields.string,
-    "ethnicity": fields.string,
-    "religion": fields.string,
-    "home_address": fields.string,
-    "phone_no": fields.string,
-    "role_id": fields.integer
+    "age": fields.Integer,
+    "gender": fields.String,
+    "nationality": fields.String,
+    "ethnicity": fields.String,
+    "religion": fields.String,
+    "home_address": fields.String,
+    "phone_no": fields.String,
+    "role_id": fields.Integer
 })
 
 teacher_model = api.model("Teacher", {
-    "id": fields.integer,
-    "id_no": fields.integer,
-    "kcse": fields.string,
-    "degree": fields.string,
-    "license_by_tsc": fields.string,
-    "experience": fields.string
+    "id": fields.Integer,
+    "id_no": fields.Integer,
+    "kcse": fields.String,
+    "degree": fields.String,
+    "license_by_tsc": fields.String,
+    "experience": fields.String
 })
 
 Teacher_input_model = api.model("Teacher", {

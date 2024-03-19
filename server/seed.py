@@ -407,7 +407,6 @@ with app.app_context():
             morning=fake.random_element([True, None]),
             afternoon=fake.random_element([True, None]),
             evening=fake.random_element([True, None]),
-            date=datetime.strptime(fake.date(), '%Y-%m-%d')
         )
         dosage_days.append(drug_day)
         
@@ -424,7 +423,6 @@ with app.app_context():
             size="A4",
             type= fake.random_element(["rulled", "squared"]),
             quantity= random.randint(1, 4),
-            date=datetime.strptime(fake.date(), '%Y-%m-%d')
         )
         books_exhange.append(book_exhange)
         
@@ -443,7 +441,6 @@ with app.app_context():
             item=fake.random_element(['Burrette', 'Pippette', 'conical falsk']),
             colour=fake.color(),
             quantity= random.randint(1, 5),
-            date=datetime.strptime(fake.date(), '%Y-%m-%d')
         )
         teachers_exchange.append(teacher_exchange)
         
@@ -459,7 +456,6 @@ with app.app_context():
             members_id=random.randint(1, 150),
             item=fake.random_element(['Burrette', 'Pippette', 'conical flask']),
             quantity= random.randint(1, 6),
-            date=datetime.strptime(fake.date(), '%Y-%m-%d')
         )
         staffs_exchange.append(staff_exchange)
         
