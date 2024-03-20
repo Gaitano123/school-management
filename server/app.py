@@ -37,8 +37,44 @@ class Role_By_ID(Resource):
     def get(self, id):
         role = Role.query.get(id)
         return role
-
-
+    
+    @ns.expect(role_input_model)
+    @ns.marshal_with(role_model)
+    def patch(self, id):
+        role = Role.query.get(id)
+        
+        if not role:
+            ns.abort(404, message= "Role not found")
+            
+        for key, value in ns.payload.items():
+            setattr(role, key, value)
+            
+        db.session.commit()
+        return role
+    
+    @ns.expect(role_input_model)
+    @ns.marshal_with(role_model)
+    def put(self, id):
+        role1 = Role.query.get(id)
+        
+        if not role1:
+            ns.abort(404, message= "Role not found")
+            
+        role1.role = ns.payload["role"]
+        db.session.commit()
+        return role1
+    
+    def delete(self, id):
+        role = Role.query.get(id)
+        
+        if not role:
+            ns.abort(404, message= "Role not found")
+            
+        db.session.delete(role)
+        db.session.commit()
+        
+        return {"message": "role deleted successfully"}, 201           
+            
 #-------------------------Member-------------------------
 
 @ns.route("/members")
